@@ -1,7 +1,7 @@
 import { GameCard } from "@/components/GameCard";
 import { WaveCatcher } from "@/components/WaveCatcher";
 import { useState } from "react";
-import { Waveform } from "lucide-react";
+import { AudioWaveform } from "lucide-react";
 
 export default function Index() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export default function Index() {
           <GameCard
             title="Wave Catcher"
             description="Поймайте инфразвуковые волны и избегайте обычных звуковых волн"
-            icon={<Waveform className="w-12 h-12" />}
+            icon={<AudioWaveform className="w-12 h-12" />}
             onClick={() => setSelectedGame("wavecatcher")}
           />
           {/* Здесь будут добавлены карточки других игр */}
