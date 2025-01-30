@@ -1,6 +1,6 @@
 import { WaveCatcher } from "@/components/WaveCatcher";
 import { useState } from "react";
-import { AudioWaveform, Maze, BrainCircuit } from "lucide-react";
+import { AudioWaveform, Box, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { GameCard } from "@/components/GameCard";
@@ -65,7 +65,7 @@ export default function Index() {
             <GameCard
               title="Звуковой лабиринт"
               description="Пройдите лабиринт, используя звуковые волны для навигации"
-              icon={<Maze className="w-12 h-12" />}
+              icon={<Box className="w-12 h-12" />}
               onClick={() => handleGameSelect("soundmaze")}
               className="touch-manipulation active:scale-95 transition-transform"
             />
