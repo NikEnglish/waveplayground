@@ -120,30 +120,32 @@ export function WaveCatcher() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 touch-manipulation">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Wave Catcher</h1>
         <p className="text-xl mb-2">Счет: {score}</p>
         <p className="text-xl">Жизни: {"❤️".repeat(lives)}</p>
       </div>
 
-      <div className="relative w-full max-w-2xl h-96 border-2 border-primary rounded-lg overflow-hidden">
+      <div className="relative w-full max-w-2xl h-96 border-2 border-primary rounded-lg overflow-hidden touch-manipulation">
         {waves.map((wave) => (
           <div
             key={wave.id}
             className={`absolute cursor-pointer transition-all duration-200 
               ${wave.caught ? "opacity-50" : "animate-pulse-wave"}
-              ${wave.frequency < 20 ? "text-blue-500" : "text-red-500"}`}
+              ${wave.frequency < 20 ? "text-blue-500" : "text-red-500"}
+              touch-manipulation active:scale-95`}
             style={{
               left: `${wave.position}%`,
               top: "50%",
               transform: "translate(-50%, -50%)",
+              padding: "20px", // Увеличиваем область касания
             }}
             onClick={() => catchWave(wave)}
           >
             <div className="text-center">
-              <div className="text-2xl">〰️</div>
-              <div className="text-sm">{wave.frequency}Hz</div>
+              <div className="text-3xl">〰️</div>
+              <div className="text-lg font-bold">{wave.frequency}Hz</div>
             </div>
           </div>
         ))}
@@ -151,7 +153,12 @@ export function WaveCatcher() {
 
       {gameOver && (
         <div className="mt-8">
-          <Button onClick={resetGame}>Играть снова</Button>
+          <Button 
+            onClick={resetGame}
+            className="text-lg py-6 px-8 active:scale-95 transition-transform"
+          >
+            Играть снова
+          </Button>
         </div>
       )}
     </div>
