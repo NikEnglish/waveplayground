@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
+import { Volume2, VolumeX } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 interface Question {
   id: number;
@@ -9,7 +11,8 @@ interface Question {
   correctAnswer: number;
 }
 
-const questions: Question[] = [
+// Expanded question set
+const allQuestions: Question[] = [
   {
     id: 1,
     text: "Что такое инфразвук?",
@@ -49,17 +52,47 @@ export function SoundQuiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [highScore, setHighScore] = useState(0);
+
+  useEffect(() => {
+    // Load high score
+    const savedHighScore = localStorage.getItem('quizhighscore');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore));
+    }
+    
+    // Shuffle questions
+    const shuffled = [...allQuestions]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10); // Take 10 random questions
+    setQuestions(shuffled);
+  }, []);
+
+  const playSound = (type: 'correct' | 'wrong') => {
+    if (!soundEnabled) return;
+    
+    const sounds = {
+      correct: new Audio('/sounds/correct.mp3'),
+      wrong: new Audio('/sounds/wrong.mp3')
+    };
+    
+    sounds[type].play().catch(console.error);
+  };
 
   const handleAnswer = (selectedAnswer: number) => {
     const correct = selectedAnswer === questions[currentQuestion].correctAnswer;
     
     if (correct) {
+      playSound('correct');
       setScore(prev => prev + 100);
       toast({
         title: "Правильно!",
         description: "+100 очков",
       });
     } else {
+      playSound('wrong');
       toast({
         title: "Неправильно!",
         description: "Попробуйте еще раз",
@@ -70,15 +103,25 @@ export function SoundQuiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
+      const finalScore = score + (correct ? 100 : 0);
+      if (finalScore > highScore) {
+        setHighScore(finalScore);
+        localStorage.setItem('quizhighscore', finalScore.toString());
+      }
       setGameOver(true);
       toast({
         title: "Игра окончена!",
-        description: `Ваш итоговый счет: ${score + (correct ? 100 : 0)}`,
+        description: `Ваш итоговый счет: ${finalScore}`,
       });
     }
   };
 
   const resetGame = () => {
+    // Shuffle questions again
+    const shuffled = [...allQuestions]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 10);
+    setQuestions(shuffled);
     setCurrentQuestion(0);
     setScore(0);
     setGameOver(false);
@@ -88,10 +131,20 @@ export function SoundQuiz() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Звуковая викторина</h1>
-        <p className="text-xl">Счет: {score}</p>
+        <div className="flex justify-center items-center gap-4 mb-4">
+          <p className="text-xl">Счет: {score}</p>
+          <p className="text-xl">Рекорд: {highScore}</p>
+          <div className="flex items-center gap-2">
+            {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            <Switch
+              checked={soundEnabled}
+              onCheckedChange={setSoundEnabled}
+            />
+          </div>
+        </div>
       </div>
 
-      {!gameOver ? (
+      {!gameOver && questions.length > 0 ? (
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-2xl font-semibold text-center mb-8">
             {questions[currentQuestion].text}
