@@ -5,7 +5,8 @@ import { toast } from "@/components/ui/use-toast";
 interface Wave {
   id: number;
   frequency: number;
-  position: number;
+  x: number;
+  y: number;
   caught: boolean;
 }
 
@@ -19,12 +20,12 @@ export function WaveCatcher() {
     if (!gameOver && lives > 0) {
       const interval = setInterval(() => {
         setWaves((currentWaves) => {
-          // Remove waves that are off screen
+          // Remove waves that are off screen or caught
           const filteredWaves = currentWaves
-            .filter((wave) => wave.position < 100 && !wave.caught)
+            .filter((wave) => wave.y < 100 && !wave.caught)
             .map((wave) => ({
               ...wave,
-              position: wave.position + 1,
+              y: wave.y + 1,
             }));
 
           // Add new wave if less than 3 waves on screen
@@ -34,7 +35,8 @@ export function WaveCatcher() {
               {
                 id: Date.now(),
                 frequency: Math.floor(Math.random() * 40),
-                position: 0,
+                x: Math.random() * 80 + 10, // Random x position between 10% and 90%
+                y: 0,
                 caught: false,
               },
             ];
@@ -51,7 +53,7 @@ export function WaveCatcher() {
   useEffect(() => {
     // Check if wave reached the end
     waves.forEach((wave) => {
-      if (wave.position >= 90 && !wave.caught) {
+      if (wave.y >= 90 && !wave.caught) {
         if (wave.frequency < 20) {
           // Missed an infrasound wave
           setLives((prev) => {
@@ -132,14 +134,14 @@ export function WaveCatcher() {
           <div
             key={wave.id}
             className={`absolute cursor-pointer transition-all duration-200 
-              ${wave.caught ? "opacity-50" : "animate-pulse-wave"}
+              ${wave.caught ? "opacity-50" : "animate-pulse"}
               ${wave.frequency < 20 ? "text-blue-500" : "text-red-500"}
               touch-manipulation active:scale-95`}
             style={{
-              left: `${wave.position}%`,
-              top: "50%",
+              left: `${wave.x}%`,
+              top: `${wave.y}%`,
               transform: "translate(-50%, -50%)",
-              padding: "20px", // Увеличиваем область касания
+              padding: "20px",
             }}
             onClick={() => catchWave(wave)}
           >

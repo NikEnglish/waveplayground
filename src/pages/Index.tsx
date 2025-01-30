@@ -1,33 +1,38 @@
-import { WaveCatcher } from "@/components/WaveCatcher";
 import { useState } from "react";
 import { AudioWaveform, Box, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { GameCard } from "@/components/GameCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleGameSelect = (game: string) => {
-    if (!game) {
-      toast({
-        title: "Ошибка",
-        description: "Пожалуйста, войдите в систему чтобы играть",
-        variant: "destructive",
-      });
-      return;
-    }
-    setSelectedGame(game);
     toast({
       title: "Игра выбрана",
       description: "Загрузка игры...",
     });
+    
+    switch (game) {
+      case "wavecatcher":
+        navigate("/wave-catcher");
+        break;
+      case "soundmaze":
+        navigate("/sound-maze");
+        break;
+      case "soundquiz":
+        navigate("/sound-quiz");
+        break;
+      default:
+        toast({
+          title: "Ошибка",
+          description: "Игра недоступна",
+          variant: "destructive",
+        });
+    }
   };
-
-  if (selectedGame === "wavecatcher") {
-    return <WaveCatcher />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-violet-900 to-purple-900 touch-manipulation">
@@ -42,17 +47,6 @@ export default function Index() {
         </div>
 
         <div className="flex flex-col gap-4 items-center justify-center">
-          <Button 
-            variant="outline" 
-            className="w-full max-w-md p-6 text-lg active:scale-95 transition-transform"
-            onClick={() => toast({
-              title: "Авторизация",
-              description: "Пожалуйста, выберите способ авторизации",
-            })}
-          >
-            Войти / Зарегистрироваться
-          </Button>
-
           <div className="w-full max-w-md space-y-4">
             <GameCard
               title="Wave Catcher"
