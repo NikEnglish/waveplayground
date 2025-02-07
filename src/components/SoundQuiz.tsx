@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -136,10 +137,14 @@ export function SoundQuiz() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Звуковая викторина</h1>
-        <div className="flex justify-center items-center gap-4 mb-4">
-          <p className="text-xl">Счет: {score}</p>
-          <p className="text-xl">Рекорд: {highScore}</p>
-          <div className="flex items-center gap-2">
+        <div className="flex justify-center items-center gap-4 mb-4 flex-wrap">
+          <div className="bg-primary/10 rounded-lg px-4 py-2">
+            <p className="text-xl">Счет: {score}</p>
+          </div>
+          <div className="bg-primary/10 rounded-lg px-4 py-2">
+            <p className="text-xl">Рекорд: {highScore}</p>
+          </div>
+          <div className="flex items-center gap-2 bg-primary/10 rounded-lg px-4 py-2">
             {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
             <Switch
               checked={soundEnabled}

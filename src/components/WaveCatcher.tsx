@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -143,10 +144,16 @@ export function WaveCatcher() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 touch-manipulation">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Wave Catcher</h1>
-        <div className="flex justify-center gap-4 flex-wrap">
-          <p className="text-xl mb-2">Счет: {score}</p>
-          <p className="text-xl mb-2">Рекорд: {highScore}</p>
-          <p className="text-xl">Жизни: {"❤️".repeat(lives)}</p>
+        <div className="flex justify-center gap-4 flex-wrap mb-4">
+          <div className="bg-primary/10 rounded-lg px-4 py-2">
+            <p className="text-xl mb-2">Счет: {score}</p>
+          </div>
+          <div className="bg-primary/10 rounded-lg px-4 py-2">
+            <p className="text-xl mb-2">Рекорд: {highScore}</p>
+          </div>
+          <div className="bg-primary/10 rounded-lg px-4 py-2">
+            <p className="text-xl">Жизни: {"❤️".repeat(lives)}</p>
+          </div>
         </div>
       </div>
 
