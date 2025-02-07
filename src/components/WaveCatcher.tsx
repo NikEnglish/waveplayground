@@ -15,6 +15,14 @@ export function WaveCatcher() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [lives, setLives] = useState(3);
+  const [highScore, setHighScore] = useState(0);
+
+  useEffect(() => {
+    const savedHighScore = localStorage.getItem('wavecatcher_highscore');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore));
+    }
+  }, []);
 
   useEffect(() => {
     if (!gameOver && lives > 0) {
@@ -60,10 +68,20 @@ export function WaveCatcher() {
             const newLives = prev - 1;
             if (newLives === 0) {
               setGameOver(true);
-              toast({
-                title: "Игра окончена!",
-                description: `Ваш счет: ${score}`,
-              });
+              const finalScore = score;
+              if (finalScore > highScore) {
+                setHighScore(finalScore);
+                localStorage.setItem('wavecatcher_highscore', finalScore.toString());
+                toast({
+                  title: "Новый рекорд!",
+                  description: `Ваш новый рекорд: ${finalScore}`,
+                });
+              } else {
+                toast({
+                  title: "Игра окончена!",
+                  description: `Ваш счет: ${finalScore}. Рекорд: ${highScore}`,
+                });
+              }
             }
             return newLives;
           });
@@ -75,7 +93,7 @@ export function WaveCatcher() {
         );
       }
     });
-  }, [waves, score]);
+  }, [waves, score, highScore]);
 
   const catchWave = (wave: Wave) => {
     if (wave.caught) return;
@@ -125,8 +143,11 @@ export function WaveCatcher() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 touch-manipulation">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Wave Catcher</h1>
-        <p className="text-xl mb-2">Счет: {score}</p>
-        <p className="text-xl">Жизни: {"❤️".repeat(lives)}</p>
+        <div className="flex justify-center gap-4 flex-wrap">
+          <p className="text-xl mb-2">Счет: {score}</p>
+          <p className="text-xl mb-2">Рекорд: {highScore}</p>
+          <p className="text-xl">Жизни: {"❤️".repeat(lives)}</p>
+        </div>
       </div>
 
       <div className="relative w-full max-w-2xl h-96 border-2 border-primary rounded-lg overflow-hidden touch-manipulation">

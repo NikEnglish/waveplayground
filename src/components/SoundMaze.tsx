@@ -90,12 +90,11 @@ export function SoundMaze() {
   }, [mazeSize, difficulty]);
 
   useEffect(() => {
-    generateMaze();
-    // Load high score from localStorage
     const savedHighScore = localStorage.getItem('mazehighscore');
     if (savedHighScore) {
       setHighScore(parseInt(savedHighScore));
     }
+    generateMaze();
   }, [level, generateMaze]);
 
   const movePlayer = (direction: { x: number; y: number }) => {
@@ -121,7 +120,11 @@ export function SoundMaze() {
           
           if (newTotalScore > highScore) {
             setHighScore(newTotalScore);
-            localStorage.setItem('mazehighscore', newTotalScore.toString());
+            localStorage.setItem('soundmaze_highscore', newTotalScore.toString());
+            toast({
+              title: "Новый рекорд!",
+              description: `Поздравляем! Ваш новый рекорд: ${newTotalScore}`,
+            });
           }
           
           playSound('win');
@@ -146,7 +149,7 @@ export function SoundMaze() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Звуковой лабиринт</h1>
-        <div className="flex justify-center gap-4 mb-4">
+        <div className="flex justify-center gap-4 flex-wrap mb-4">
           <p className="text-xl">Уровень: {level}</p>
           <p className="text-xl">Счет: {score}</p>
           <p className="text-xl">Рекорд: {highScore}</p>

@@ -58,7 +58,7 @@ export function SoundQuiz() {
 
   useEffect(() => {
     // Load high score
-    const savedHighScore = localStorage.getItem('quizhighscore');
+    const savedHighScore = localStorage.getItem('soundquiz_highscore');
     if (savedHighScore) {
       setHighScore(parseInt(savedHighScore));
     }
@@ -66,7 +66,7 @@ export function SoundQuiz() {
     // Shuffle questions
     const shuffled = [...allQuestions]
       .sort(() => Math.random() - 0.5)
-      .slice(0, 10); // Take 10 random questions
+      .slice(0, 10);
     setQuestions(shuffled);
   }, []);
 
@@ -106,13 +106,18 @@ export function SoundQuiz() {
       const finalScore = score + (correct ? 100 : 0);
       if (finalScore > highScore) {
         setHighScore(finalScore);
-        localStorage.setItem('quizhighscore', finalScore.toString());
+        localStorage.setItem('soundquiz_highscore', finalScore.toString());
+        toast({
+          title: "Новый рекорд!",
+          description: `Поздравляем! Ваш новый рекорд: ${finalScore}`,
+        });
+      } else {
+        toast({
+          title: "Игра окончена!",
+          description: `Ваш итоговый счет: ${finalScore}. Рекорд: ${highScore}`,
+        });
       }
       setGameOver(true);
-      toast({
-        title: "Игра окончена!",
-        description: `Ваш итоговый счет: ${finalScore}`,
-      });
     }
   };
 
