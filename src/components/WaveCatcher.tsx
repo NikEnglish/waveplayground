@@ -18,12 +18,25 @@ export function WaveCatcher() {
   const [lives, setLives] = useState(3);
   const [highScore, setHighScore] = useState(0);
 
+  // Load high score on component mount
   useEffect(() => {
     const savedHighScore = localStorage.getItem('wavecatcher_highscore');
     if (savedHighScore) {
       setHighScore(parseInt(savedHighScore));
     }
   }, []);
+
+  // Update high score when game ends
+  useEffect(() => {
+    if (gameOver && score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('wavecatcher_highscore', score.toString());
+      toast({
+        title: "Новый рекорд!",
+        description: `Ваш новый рекорд: ${score}`,
+      });
+    }
+  }, [gameOver, score, highScore]);
 
   useEffect(() => {
     if (!gameOver && lives > 0) {
@@ -44,7 +57,7 @@ export function WaveCatcher() {
               {
                 id: Date.now(),
                 frequency: Math.floor(Math.random() * 40),
-                x: Math.random() * 80 + 10, // Random x position between 10% and 90%
+                x: Math.random() * 80 + 10,
                 y: 0,
                 caught: false,
               },
@@ -69,18 +82,17 @@ export function WaveCatcher() {
             const newLives = prev - 1;
             if (newLives === 0) {
               setGameOver(true);
-              const finalScore = score;
-              if (finalScore > highScore) {
-                setHighScore(finalScore);
-                localStorage.setItem('wavecatcher_highscore', finalScore.toString());
+              if (score > highScore) {
+                setHighScore(score);
+                localStorage.setItem('wavecatcher_highscore', score.toString());
                 toast({
                   title: "Новый рекорд!",
-                  description: `Ваш новый рекорд: ${finalScore}`,
+                  description: `Ваш новый рекорд: ${score}`,
                 });
               } else {
                 toast({
                   title: "Игра окончена!",
-                  description: `Ваш счет: ${finalScore}. Рекорд: ${highScore}`,
+                  description: `Ваш счет: ${score}. Рекорд: ${highScore}`,
                 });
               }
             }
@@ -112,10 +124,19 @@ export function WaveCatcher() {
         const newLives = prev - 1;
         if (newLives === 0) {
           setGameOver(true);
-          toast({
-            title: "Игра окончена!",
-            description: `Ваш счет: ${score}`,
-          });
+          if (score > highScore) {
+            setHighScore(score);
+            localStorage.setItem('wavecatcher_highscore', score.toString());
+            toast({
+              title: "Новый рекорд!",
+              description: `Ваш новый рекорд: ${score}`,
+            });
+          } else {
+            toast({
+              title: "Игра окончена!",
+              description: `Ваш счет: ${score}. Рекорд: ${highScore}`,
+            });
+          }
         }
         return newLives;
       });
